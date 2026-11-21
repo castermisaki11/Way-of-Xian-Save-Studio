@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ตัวแก้ไขเซฟ Way of Xian</title>
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+<h1>ตัวแก้ไขเซฟ Way of Xian</h1>
+<p class="sub">เปิดไฟล์เซฟ (WOX2) → แก้ค่า → บันทึกกลับเป็นไฟล์เซฟที่เกมอ่านได้ ทุกอย่างทำงานในเครื่องคุณ ไม่มีการอัปโหลดไฟล์</p>
+
+<div class="card">
+  <label class="btn" for="f">เลือกไฟล์เซฟ (.json / .wox)</label>
+  <input id="f" type="file" accept=".json,.wox,.txt">
+  <div id="st" class="sub" style="margin:8px 0 0">ยังไม่ได้เปิดไฟล์</div>
+</div>
+
+<div id="app" class="hide">
+  <div class="tabs"><button id="t1">แก้ไขด่วน</button><button id="t2" class="off">ข้อมูลทั้งหมด</button></div>
+  <div id="p1" class="card"></div>
+  <div id="p2" class="card hide">
+    <input id="q" type="search" placeholder="ค้นหาชื่อคีย์หรือค่า เช่น money, wind, 144">
+    <div id="res" class="tw" style="margin-top:8px"></div>
+  </div>
+  <div class="bar">
+    <button id="sv">บันทึกไฟล์เซฟ</button>
+    <span id="msg" class="sub" style="margin:0"></span>
+  </div>
+  <details class="note"><summary>⚠ ข้อควรรู้ก่อนใช้ไฟล์ที่แก้</summary><p class="sub">แนะนำให้เก็บไฟล์เดิมไว้สำรองก่อนนำไฟล์ที่แก้ไปใช้ · ปุ่ม “สูงสุด” ของค่าสถานะใช้เพดานที่เซฟนี้เคยบันทึกไว้ (capSeen) ส่วนสุขภาพใช้ 100 และเงิน 99,999,999 (ค่าที่ตั้งเอง พิมพ์เลขอื่นได้ แต่เกมอาจตัดค่าที่เกินเพดานตอนโหลด) · ค่าสถานะทั้ง 5 ปรับ statSrc ให้ตรงกันอัตโนมัติทั้งสองแท็บ · เมื่อบันทึกไฟล์ที่ถูกแก้ ตัวแก้ไขจะใส่ป้าย “ชีวิตที่ถูกแก้ไข” แบบเดียวกับที่เกมทำเอง ชีวิตนี้เล่นเดี่ยวต่อได้ตามปกติ แต่จะไม่ขึ้นทำเนียบ ลงแข่งออนไลน์ หรืออวดของในแชท และป้ายนี้แก้หรือลบไม่ได้ · แท็บแก้ไขด่วนยังแก้พื้นหลังตระกูล/โครงสร้างครอบครัว/รากปราณ (ระดับ–ธาตุ–ความบริสุทธิ์)/เส้นเอ็น/ดวงชะตาได้ · เปลี่ยนดวงชะตาเฉพาะระดับดาว (tier) จะไม่เปลี่ยนเรื่องราวที่ผูกไว้ (id) ต้องแก้ช่อง id ด้วย</p></details>
+</div>
+
+<script src="editor.js"></script>
+</body>
+</html>

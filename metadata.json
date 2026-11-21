@@ -1,0 +1,8 @@
+{
+  "name": "Way of Xian Save Studio",
+  "description": "ตัวแก้ไขและตรวจสอบไฟล์เซฟเกม Way of Xian (WOX2) แบบทำงานในเครื่อง 100% รองรับการถอดรหัส แก้ค่าสถานะ กำเนิด ดวงชะตา พรสวรรค์ และต้นไม้ข้อมูล JSON",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
