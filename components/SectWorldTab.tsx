@@ -389,7 +389,7 @@ export function SectWorldTab({ state, onSetAt, onMutate, onNotify }: SectWorldTa
           </div>
 
           <div className="space-y-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-900/50">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 ตำแหน่งและสถานะ (status)
               </span>
@@ -405,7 +405,7 @@ export function SectWorldTab({ state, onSetAt, onMutate, onNotify }: SectWorldTa
                       merit: 0,
                     })
                   }
-                  className="rounded-md bg-teal-700 px-2.5 py-1 text-xs font-medium text-white hover:bg-teal-800 dark:bg-teal-500 dark:text-slate-950"
+                  className="min-h-[36px] rounded-md bg-teal-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-800 dark:bg-teal-500 dark:text-slate-950"
                 >
                   ตั้งเป็นศิษย์สำนัก
                 </button>
@@ -413,56 +413,114 @@ export function SectWorldTab({ state, onSetAt, onMutate, onNotify }: SectWorldTa
             </div>
 
             {statusObj?.id === 'disciple' ? (
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                <div className="sm:col-span-3">
-                  <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
-                    ระดับตำแหน่งในสำนัก (rank)
-                  </label>
-                  <select
-                    value={String(statusObj.rank || 'outer')}
-                    onChange={(e) => onSetAt(['status', 'rank'], e.target.value)}
-                    className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 focus:border-teal-700 focus:outline-none sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                  >
-                    {SECT_RANKS.map(([id, th, en]) => (
-                      <option key={id} value={id}>
-                        {th} · {en} ({id})
-                      </option>
-                    ))}
-                  </select>
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      ระดับตำแหน่งในสำนัก (rank)
+                    </label>
+                    <select
+                      value={String(statusObj.rank || 'outer')}
+                      onChange={(e) => onSetAt(['status', 'rank'], e.target.value)}
+                      className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 focus:border-teal-700 focus:outline-none sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    >
+                      {SECT_RANKS.map(([id, th, en]) => (
+                        <option key={id} value={id}>
+                          {th} · {en} ({id})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      เดือนที่เข้า (since)
+                    </label>
+                    <input
+                      type="number"
+                      value={Number(statusObj.since) || 0}
+                      onChange={(e) => onSetAt(['status', 'since'], Number(e.target.value) || 0)}
+                      className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-base text-slate-900 sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
-                    ความเอ็นดู (favor)
-                  </label>
-                  <input
-                    type="number"
-                    value={Number(statusObj.favor) || 0}
-                    onChange={(e) => onSetAt(['status', 'favor'], Number(e.target.value) || 0)}
-                    className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-base text-slate-900 sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                  />
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5 dark:border-slate-700/80 dark:bg-slate-950/60">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                      แต้มผลงานสำนัก / คุณูปการ (merit)
+                    </label>
+                    <span className="tabular-nums font-mono text-xs text-teal-700 dark:text-teal-400">
+                      {(Number(statusObj.merit) || 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={Number(statusObj.merit) || 0}
+                      onChange={(e) =>
+                        onSetAt(['status', 'merit'], Math.max(0, Number(e.target.value) || 0))
+                      }
+                      className="min-h-[44px] min-w-[110px] flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-base text-slate-900 focus:border-teal-700 focus:outline-none sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    />
+                    {[100, 500, 1000, 5000].map((delta) => (
+                      <button
+                        key={delta}
+                        type="button"
+                        onClick={() =>
+                          onSetAt(
+                            ['status', 'merit'],
+                            (Number(statusObj.merit) || 0) + delta
+                          )
+                        }
+                        className="min-h-[40px] rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-800 sm:min-h-[36px] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-teal-950/50 dark:hover:text-teal-300"
+                      >
+                        +{delta.toLocaleString()}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => onSetAt(['status', 'merit'], 10000)}
+                      className="min-h-[40px] rounded-lg bg-teal-700 px-2.5 py-1 font-mono text-xs font-medium text-white hover:bg-teal-800 sm:min-h-[36px] dark:bg-teal-500 dark:text-slate-950"
+                    >
+                      = 10,000
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
-                    คุณูปการ (merit)
-                  </label>
-                  <input
-                    type="number"
-                    value={Number(statusObj.merit) || 0}
-                    onChange={(e) => onSetAt(['status', 'merit'], Number(e.target.value) || 0)}
-                    className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-base text-slate-900 sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
-                    เดือนที่เข้า (since)
-                  </label>
-                  <input
-                    type="number"
-                    value={Number(statusObj.since) || 0}
-                    onChange={(e) => onSetAt(['status', 'since'], Number(e.target.value) || 0)}
-                    className="min-h-[44px] w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-base text-slate-900 sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                  />
+
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5 dark:border-slate-700/80 dark:bg-slate-950/60">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                      ความเอ็นดูในสำนัก (favor)
+                    </label>
+                    <span className="tabular-nums font-mono text-xs text-slate-500 dark:text-slate-400">
+                      {Number(statusObj.favor) || 0}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                    <input
+                      type="number"
+                      value={Number(statusObj.favor) || 0}
+                      onChange={(e) => onSetAt(['status', 'favor'], Number(e.target.value) || 0)}
+                      className="min-h-[44px] min-w-[110px] flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-base text-slate-900 focus:border-teal-700 focus:outline-none sm:min-h-[38px] sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    />
+                    {[10, 50, 100].map((delta) => (
+                      <button
+                        key={delta}
+                        type="button"
+                        onClick={() =>
+                          onSetAt(
+                            ['status', 'favor'],
+                            (Number(statusObj.favor) || 0) + delta
+                          )
+                        }
+                        className="min-h-[40px] rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-800 sm:min-h-[36px] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-teal-950/50 dark:hover:text-teal-300"
+                      >
+                        +{delta}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
@@ -511,52 +569,193 @@ export function SectWorldTab({ state, onSetAt, onMutate, onNotify }: SectWorldTa
           </div>
         </div>
 
-        {(curSectWorld || ownSect) && (
+        {(curSect || curSectWorld || ownSect) && (
           <div className="mt-4 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 md:grid-cols-2 dark:border-slate-800">
-            {curSectWorld && (
-              <div className="space-y-2.5 rounded-lg border border-slate-200 p-3.5 dark:border-slate-800">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  สถานะสำนักในโลก (world.sects.{curSect})
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="mb-1 block text-[11px] text-slate-500">กองทุน (funds)</label>
+            {curSect && (
+              <div className="space-y-3 rounded-lg border border-slate-200 p-3.5 dark:border-slate-800">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                    สถานะและความสัมพันธ์สำนัก ({curSect})
+                  </p>
+                  {!curSectWorld && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onMutate((draft) => {
+                          if (!draft.world || typeof draft.world !== 'object' || Array.isArray(draft.world)) {
+                            draft.world = { people: [], rel: {}, sects: {} };
+                          }
+                          const w = draft.world as Record<string, unknown>;
+                          if (!w.sects || typeof w.sects !== 'object' || Array.isArray(w.sects)) {
+                            w.sects = {};
+                          }
+                          (w.sects as Record<string, unknown>)[curSect] = {
+                            funds: 100,
+                            fame: 20,
+                            loyalty: 80,
+                            disciples: 40,
+                          };
+                        }, `สร้างข้อมูล world.sects.${curSect} แล้ว`)
+                      }
+                      className="min-h-[34px] rounded-md border border-teal-700/30 bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-800 hover:bg-teal-100 dark:border-teal-500/40 dark:bg-teal-950/40 dark:text-teal-300"
+                    >
+                      + สร้างสถานะสำนักในโลก
+                    </button>
+                  )}
+                </div>
+
+                {curSectWorld && (
+                  <>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      <div>
+                        <label className="mb-1 block text-[11px] text-slate-500">
+                          กองทุน (funds)
+                        </label>
+                        <input
+                          type="number"
+                          value={Number(curSectWorld.funds) || 0}
+                          onChange={(e) =>
+                            onSetAt(['world', 'sects', curSect, 'funds'], Number(e.target.value) || 0)
+                          }
+                          className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] text-slate-500">
+                          ชื่อเสียงสำนัก (fame)
+                        </label>
+                        <input
+                          type="number"
+                          value={Number(curSectWorld.fame) || 0}
+                          onChange={(e) =>
+                            onSetAt(['world', 'sects', curSect, 'fame'], Number(e.target.value) || 0)
+                          }
+                          className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] text-slate-500">
+                          ความภักดี (loyalty)
+                        </label>
+                        <input
+                          type="number"
+                          value={Number(curSectWorld.loyalty) || 0}
+                          onChange={(e) =>
+                            onSetAt(
+                              ['world', 'sects', curSect, 'loyalty'],
+                              Number(e.target.value) || 0
+                            )
+                          }
+                          className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] text-slate-500">
+                          ศิษย์ (disciples)
+                        </label>
+                        <input
+                          type="number"
+                          value={Number(curSectWorld.disciples) || 0}
+                          onChange={(e) =>
+                            onSetAt(
+                              ['world', 'sects', curSect, 'disciples'],
+                              Number(e.target.value) || 0
+                            )
+                          }
+                          className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onSetAt(
+                            ['world', 'sects', curSect, 'funds'],
+                            (Number(curSectWorld.funds) || 0) + 500
+                          )
+                        }
+                        className="min-h-[34px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      >
+                        +500 กองทุน
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onSetAt(
+                            ['world', 'sects', curSect, 'fame'],
+                            (Number(curSectWorld.fame) || 0) + 100
+                          )
+                        }
+                        className="min-h-[34px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      >
+                        +100 ชื่อเสียง
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onSetAt(['world', 'sects', curSect, 'loyalty'], 100)}
+                        className="min-h-[34px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      >
+                        ภักดี 100
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onSetAt(
+                            ['world', 'sects', curSect, 'disciples'],
+                            (Number(curSectWorld.disciples) || 0) + 50
+                          )
+                        }
+                        className="min-h-[34px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      >
+                        +50 ศิษย์
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                <div className="border-t border-slate-200/80 pt-2.5 dark:border-slate-800">
+                  <label className="mb-1 block text-[11px] text-slate-500">
+                    ความสัมพันธ์กับสำนักนี้ (sectRel.{curSect})
+                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
                     <input
                       type="number"
-                      value={Number(curSectWorld.funds) || 0}
-                      onChange={(e) =>
-                        onSetAt(['world', 'sects', curSect, 'funds'], Number(e.target.value) || 0)
+                      value={
+                        state.sectRel &&
+                        typeof state.sectRel === 'object' &&
+                        !Array.isArray(state.sectRel)
+                          ? Number((state.sectRel as Record<string, unknown>)[curSect]) || 0
+                          : 0
                       }
-                      className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-[11px] text-slate-500">ความภักดี</label>
-                    <input
-                      type="number"
-                      value={Number(curSectWorld.loyalty) || 0}
                       onChange={(e) =>
-                        onSetAt(
-                          ['world', 'sects', curSect, 'loyalty'],
-                          Number(e.target.value) || 0
-                        )
+                        onSetAt(['sectRel', curSect], Number(e.target.value) || 0)
                       }
-                      className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                      className="min-h-[40px] min-w-[100px] flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-[11px] text-slate-500">ศิษย์</label>
-                    <input
-                      type="number"
-                      value={Number(curSectWorld.disciples) || 0}
-                      onChange={(e) =>
-                        onSetAt(
-                          ['world', 'sects', curSect, 'disciples'],
-                          Number(e.target.value) || 0
-                        )
-                      }
-                      className="min-h-[40px] w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-base text-slate-900 sm:text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const curRelVal =
+                          state.sectRel &&
+                          typeof state.sectRel === 'object' &&
+                          !Array.isArray(state.sectRel)
+                            ? Number((state.sectRel as Record<string, unknown>)[curSect]) || 0
+                            : 0;
+                        onSetAt(['sectRel', curSect], curRelVal + 20);
+                      }}
+                      className="min-h-[38px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                    >
+                      +20
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onSetAt(['sectRel', curSect], 100)}
+                      className="min-h-[38px] rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                    >
+                      = 100
+                    </button>
                   </div>
                 </div>
               </div>

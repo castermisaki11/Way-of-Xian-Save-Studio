@@ -56,8 +56,17 @@ export function QuickEditTab({
     Array<{ label: string; path: PathSegment[]; max?: number }>
   >();
 
+  const statusObj =
+    state.status && typeof state.status === 'object' && !Array.isArray(state.status)
+      ? (state.status as Record<string, unknown>)
+      : null;
+
   for (const field of QUICK_FIELDS) {
-    const val = getAtPath(state, field.path);
+    const rawVal = getAtPath(state, field.path);
+    const val =
+      rawVal === undefined && field.path[0] === 'status' && statusObj?.id === 'disciple'
+        ? 0
+        : rawVal;
     if (val === undefined || val === null || typeof val === 'object') continue;
     if (!groupMap.has(field.group)) {
       const arr: Array<{ label: string; path: PathSegment[]; max?: number }> = [];
@@ -213,7 +222,11 @@ export function QuickEditTab({
           <div className="divide-y divide-slate-200 dark:divide-slate-800">
             {grp.items.map((item) => {
               const pathStr = item.path.join('.');
-              const val = getAtPath(state, item.path);
+              const rawVal = getAtPath(state, item.path);
+              const val =
+                rawVal === undefined && item.path[0] === 'status' && statusObj?.id === 'disciple'
+                  ? 0
+                  : rawVal;
               const isStat =
                 item.path[0] === 'stats' && STAT_KEYS.includes(item.path[1] as StatKey);
               const statName = isStat ? (item.path[1] as StatKey) : null;
@@ -357,6 +370,22 @@ export function QuickEditTab({
                                     className="tabular-nums min-h-[44px] w-20 rounded-lg border border-slate-200 bg-white px-2.5 py-2 font-mono text-base text-slate-900 sm:min-h-[40px] sm:text-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                                   />
                                   <span className="text-xs text-slate-500">ปี</span>
+                                </div>
+                              )}
+                              {pathStr === 'status.merit' && (
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  {[500, 1000, 5000].map((delta) => (
+                                    <button
+                                      key={delta}
+                                      type="button"
+                                      onClick={() =>
+                                        onSetAt(item.path, (Number(val) || 0) + delta)
+                                      }
+                                      className="tabular-nums min-h-[40px] rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 font-mono text-xs font-medium text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-teal-950/50 dark:hover:text-teal-300"
+                                    >
+                                      +{delta.toLocaleString()}
+                                    </button>
+                                  ))}
                                 </div>
                               )}
                               {maxVal != null && (
